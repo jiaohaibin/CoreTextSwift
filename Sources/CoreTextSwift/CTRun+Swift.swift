@@ -1,5 +1,6 @@
 import CoreText
 import Foundation
+import UIKit
 
 extension CTRun {
 
@@ -56,9 +57,13 @@ extension CTRun {
     (CTRunGetAttributes(self) as NSDictionary as! [String: Any])
       .reduce([:]) { (partialResult: [CTStringAttributeName: Any], tuple: (key: String, value: Any)) in
         var result = partialResult
-        if let attributeName = CTStringAttributeName(rawValue: tuple.key) {
-          result[attributeName] = tuple.value
-        }
+        if tuple.key == "NSColor" {
+                    result[.foregroundColor] = tuple.value
+                } else {
+                    if let attributeName = CTStringAttributeName(rawValue: tuple.key) {
+                        result[attributeName] = tuple.value
+                    }
+                }
         return result
     }
   }
@@ -67,8 +72,9 @@ extension CTRun {
     attributes[.font] as! CTFont
   }
 
-  public var foregroundColor: String? {
-    attributes[.foregroundColor] as? String
+  public var foregroundColor: UIColor? {
+      let color = attributes[.foregroundColor]
+      return color as? UIColor
   }
 
   public var runDelegate: Any? {
